@@ -1,24 +1,21 @@
 package routes
 
 import (
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 )
 
-func SetupRoutes() *mux.Router {
-	r := mux.NewRouter()
+const (
+	healthCheck    = "/health"
+	getPlayerStats = "/player/{playerTag}"
+	getClubStats   = "/club/{clubTag}"
+)
 
-	r.HandleFunc("/", HomeHandler)
-	r.HandleFunc("/about", AboutHandler)
+func SetupRoutes() *chi.Mux {
+	r := chi.NewRouter()
+
+	r.Get(healthCheck, healthHandler)
+	r.Get(getPlayerStats, playerHandler)
+	// r.Get(getClubStats, clubHandler)
 
 	return r
-}
-
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	// Handle the home route
-}
-
-func AboutHandler(w http.ResponseWriter, r *http.Request) {
-	// Handle the about route
 }

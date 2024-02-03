@@ -1,0 +1,14 @@
+Resources:
+  BrawlStarsStatsService:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      CodeUri: .
+      FunctionName: brawl-stars-stats-service
+      Events:
+        ApiGet:
+          Type: Api
+          Properties:
+            Path: /brawl-stars-stats
+            Method: get

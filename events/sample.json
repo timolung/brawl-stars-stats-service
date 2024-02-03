@@ -1,0 +1,61 @@
+{
+    "resource": "/brawl-stars-stats",
+    "path": "/health",
+    "httpMethod": "GET",
+    "headers": {
+      "Accept": "*/*",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Host": "localhost:3000",
+      "User-Agent": "curl/7.68.0",
+      "X-Amzn-Trace-Id": "Root=1-6213e1be-20d879b763ff1e5c2060e127",
+      "X-Forwarded-For": "127.0.0.1",
+      "X-Forwarded-Port": "3000",
+      "X-Forwarded-Proto": "http"
+    },
+    "multiValueHeaders": {
+      "Accept": ["*/*"],
+      "Accept-Encoding": ["gzip, deflate, br"],
+      "Host": ["localhost:3000"],
+      "User-Agent": ["curl/7.68.0"],
+      "X-Amzn-Trace-Id": ["Root=1-6213e1be-20d879b763ff1e5c2060e127"],
+      "X-Forwarded-For": ["127.0.0.1"],
+      "X-Forwarded-Port": ["3000"],
+      "X-Forwarded-Proto": ["http"]
+    },
+    "queryStringParameters": null,
+    "multiValueQueryStringParameters": null,
+    "pathParameters": null,
+    "stageVariables": null,
+    "requestContext": {
+      "resourceId": "abcdefghij",
+      "resourcePath": "/brawl-stars-stats",
+      "httpMethod": "GET",
+      "extendedRequestId": "RzGoHGi1oAMFVdw=",
+      "requestTime": "20/Feb/2022:15:18:54 +0000",
+      "path": "/brawl-stars-stats",
+      "accountId": "123456789012",
+      "protocol": "HTTP/1.1",
+      "stage": "test",
+      "domainPrefix": "test",
+      "requestTimeEpoch": 1645383534969,
+      "requestId": "12345678-1234-5678-1234-567812345678",
+      "identity": {
+        "cognitoIdentityPoolId": null,
+        "accountId": null,
+        "cognitoIdentityId": null,
+        "caller": null,
+        "sourceIp": "127.0.0.1",
+        "principalOrgId": null,
+        "accessKey": null,
+        "cognitoAuthenticationType": null,
+        "cognitoAuthenticationProvider": null,
+        "userArn": null,
+        "userAgent": "curl/7.68.0",
+        "user": null
+      },
+      "domainName": "localhost",
+      "apiId": "abcdefghijkl"
+    },
+    "body": null,
+    "isBase64Encoded": false
+  }
