@@ -2,53 +2,43 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/timolung/brawl-stars-stats-service/internal/config"
+	"github.com/timolung/brawl-stars-stats-service/internal/services"
 )
 
 // NewRouter creates a new Router instance with the given configuration
-func NewRouter() http.Handler {
+func NewRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/battle-log-stats/{playerTag}", handleBattleLogStats).Methods("GET")
-	r.HandleFunc("/health-check", handleHealthCheck).Methods("GET")
+	r.HandleFunc("/battle-log-stats/{playerTag}", getBattleLogStats)
+	r.HandleFunc("/health", getHealthCheck).Methods("GET")
 	return r
 }
 
-func handleBattleLogStats(w http.ResponseWriter, r *http.Request) {
+func getBattleLogStats(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	playerTag := vars["playerTag"]
-
-	// Construct the URL
-	url := fmt.Sprintf(config.BattleLogEndpoint, playerTag)
-
-	// Make a request to the external endpoint
-	resp, err := http.Get(url)
+	playerService := services.NewPlayerService(playerTag)
+	data, err := playerService.GetData()
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error sending request: %v", err), http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Check the response status code
-	if resp.StatusCode != http.StatusOK {
-		http.Error(w, fmt.Sprintf("Unexpected response from external API: %v", resp.Status), http.StatusInternalServerError)
+		http.Error(w, "Failed to fetch player data", http.StatusInternalServerError)
 		return
 	}
 
-	// Copy the response from the external API to the client
+	// Set Content-Type header to application/json
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if _, err := io.Copy(w, resp.Body); err != nil {
-		http.Error(w, fmt.Sprintf("Error copying response: %v", err), http.StatusInternalServerError)
+
+	// Encode the data as JSON and write it to the response writer
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleHealthCheck(w http.ResponseWriter, r *http.Request) {
+func getHealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "Health Check OK")
 }

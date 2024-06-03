@@ -1,22 +1,31 @@
 package config
 
-import "os"
+import (
+	"flag"
+	"os"
 
-var (
-	Cfg               *Config
-	BattleLogEndpoint = "https://bsproxy.royaleapi.dev/v1/players/{playerTag}/battlelog"
+	"github.com/timolung/brawl-stars-stats-service/internal/constant"
 )
 
-type Config struct {
-	BrawlStarsAPIKey string
-	// Other configuration parameters...
+type AppConfig struct {
+	BattleLogEndpoint string
+	BrawlStarsAPIKey  string
 }
 
-func LoadConfig() {
-	// Load configuration from environment variables or config files
-	apiKey := os.Getenv("BRAWL_STARS_API_KEY")
-
-	Cfg = &Config{
-		BrawlStarsAPIKey: apiKey,
+var (
+	Cfg = AppConfig{
+		BattleLogEndpoint: constant.BattleLogEndpoint,
+		BrawlStarsAPIKey:  "missing",
 	}
+)
+
+func Configure() {
+	flag.StringVar(&Cfg.BrawlStarsAPIKey, "missing", EnvVarOrString("BRAWL_STARS_API_KEY", Cfg.BrawlStarsAPIKey), "Brawl Stars API Key")
+}
+
+func EnvVarOrString(key string, defaultVal string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return defaultVal
 }

@@ -2,34 +2,37 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/timolung/brawl-stars-stats-service/internal/config"
 )
 
 type PlayerService struct {
-	APIKey         string
-	PlayerEndpoint string
-	PlayerTag      string
+	PlayerTag string
 }
 
-func NewPlayerService(apiKey string, playerEndpoint string, playerTag string) *BrawlStarsService {
-	return &BrawlStarsService{
-		APIKey:         apiKey,
-		PlayerEndpoint: playerEndpoint,
-		PlayerTag:      playerTag,
+func NewPlayerService(playerTag string) *PlayerService {
+	playerTag = "#" + playerTag
+	playerTagEncoded := url.PathEscape(playerTag)
+	return &PlayerService{
+		PlayerTag: playerTagEncoded,
 	}
 }
 
-func (bs *BrawlStarsService) GetData() (map[string]interface{}, error) {
-	url := strings.Replace(config.BattleLogEndpoint, "{playerTag}", bs.PlayerEndpoint, 1)
+func (bs *PlayerService) GetData() (map[string]interface{}, error) {
+	url := strings.Replace(config.Cfg.BattleLogEndpoint, "{playerTag}", bs.PlayerTag, 1)
+	fmt.Println(url)
+	fmt.Println(config.Cfg.BrawlStarsAPIKey)
+	fmt.Println("\n\n")
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Authorization", "Bearer "+bs.APIKey)
+	req.Header.Set("Authorization", "Bearer "+config.Cfg.BrawlStarsAPIKey)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -42,6 +45,8 @@ func (bs *BrawlStarsService) GetData() (map[string]interface{}, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+	test, _ := json.Marshal(result)
+	fmt.Println(string(test))
 
 	return result, nil
 }

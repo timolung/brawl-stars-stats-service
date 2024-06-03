@@ -21,5 +21,8 @@ Thumbs.db
 *.test
 *.prof
 
+# build
+function.zip
+
 # Secrets
-env.json
+secrets.txt
