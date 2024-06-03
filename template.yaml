@@ -1,0 +1,31 @@
+Resources:
+  BrawlStarsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      Environment:
+        Variables:
+          BRAWL_STARS_API_KEY: !Ref BrawlStarsApiKey
+      Events:
+        BrawlStarsApi:
+          Type: Api
+          Properties:
+            Path: /battle-log-stats/{playerTag}
+            Method: get
+  HealthCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main
+      Runtime: go1.x
+      Events:
+        HealthCheckApi:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: get
+
+Parameters:
+  BrawlStarsApiKey:
+    Type: String
+    Description: "API Key for Brawl Stars"
