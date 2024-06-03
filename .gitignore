@@ -21,3 +21,5 @@ Thumbs.db
 *.test
 *.prof
 
+# Secrets
+env.json
