@@ -13,7 +13,7 @@ import (
 // NewRouter creates a new Router instance with the given configuration
 func NewRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/battle-log-stats/{playerTag}", getBattleLogStats)
+	r.HandleFunc("/battle-log/{playerTag}", getBattleLogStats)
 	r.HandleFunc("/health", getHealthCheck).Methods("GET")
 	return r
 }

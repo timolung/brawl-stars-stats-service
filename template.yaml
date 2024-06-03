@@ -14,7 +14,7 @@ Resources:
         BrawlStarsApi:
           Type: Api
           Properties:
-            Path: /battle-log-stats/{playerTag}
+            Path: /battle-log/{playerTag}
             Method: get
   HealthCheckFunction:
     Type: AWS::Serverless::Function
