@@ -25,8 +25,6 @@ func NewPlayerService(playerTag string) *PlayerService {
 func (bs *PlayerService) GetData() (map[string]interface{}, error) {
 	url := strings.Replace(config.Cfg.BattleLogEndpoint, "{playerTag}", bs.PlayerTag, 1)
 	fmt.Println(url)
-	fmt.Println(config.Cfg.BrawlStarsAPIKey)
-	fmt.Println("\n\n")
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
