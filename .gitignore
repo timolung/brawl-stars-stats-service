@@ -31,8 +31,7 @@ Thumbs.db
 *.prof
 
 # build
-function.zip
-main.zip
+*.zip
 main
 
 # Secrets
