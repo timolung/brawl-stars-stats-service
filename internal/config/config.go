@@ -8,14 +8,16 @@ import (
 )
 
 type AppConfig struct {
-	BattleLogEndpoint string
-	BrawlStarsAPIKey  string
+	BattleLogEndpoint   string
+	BrawlStarsAPIKey    string
+	ClubMembersEndpoint string
 }
 
 var (
 	Cfg = AppConfig{
-		BattleLogEndpoint: constant.BattleLogEndpoint,
-		BrawlStarsAPIKey:  "missing",
+		BattleLogEndpoint:   constant.BattleLogEndpoint,
+		BrawlStarsAPIKey:    "test-api-key",
+		ClubMembersEndpoint: constant.ClubMembersEndpoint,
 	}
 )
 

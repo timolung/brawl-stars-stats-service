@@ -7,6 +7,7 @@ Resources:
     Properties:
       Handler: main
       Runtime: go1.x
+      Timeout: 10
       Environment:
         Variables:
           BRAWL_STARS_API_KEY: !Ref BrawlStarsApiKey
@@ -15,6 +16,11 @@ Resources:
           Type: Api
           Properties:
             Path: /battle-log/{playerTag}
+            Method: get
+        ClubMembersApi:
+          Type: Api
+          Properties:
+            Path: /club-members/{clubTag}
             Method: get
   HealthCheckFunction:
     Type: AWS::Serverless::Function
