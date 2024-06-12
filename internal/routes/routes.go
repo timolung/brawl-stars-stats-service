@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/timolung/brawl-stars-stats-service/internal/services"
+	"github.com/timolung/brawl-stars-stats-service/internal/utils"
 )
 
 // NewRouter creates a new Router instance with the given configuration
@@ -40,8 +41,8 @@ func getBattleLogStats(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("Calculated Battlle Log Stats: %v", battleLogStats)
 
-	// Set Content-Type header to application/json
-	w.Header().Set("Content-Type", "application/json")
+	// Add Headers
+	utils.AddCORS(w)
 
 	// Encode the data as JSON and write it to the response writer
 	if err := json.NewEncoder(w).Encode(battleLogStats); err != nil {
@@ -71,8 +72,7 @@ func getClubStats(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("Calculated Club Member Stats: %v", clubMemberStats)
 
-	// Set Content-Type header to application/json
-	w.Header().Set("Content-Type", "application/json")
+	utils.AddCORS(w)
 
 	// Encode the data as JSON and write it to the response writer
 	if err := json.NewEncoder(w).Encode(clubMemberStats); err != nil {

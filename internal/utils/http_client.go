@@ -37,3 +37,12 @@ func MakeAPIRequest(endpoint, param string, replaceParam string) (map[string]int
 
 	return result, nil
 }
+
+func AddCORS(w http.ResponseWriter) {
+	// Set Content-Type header to application/json
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Origin", "https://brawl-stars-stats-app.s3.amazonaws.com")
+	w.Header().Set("Access-Control-Allow-Methods", "OPTIONS,POST,GET")
+
+}

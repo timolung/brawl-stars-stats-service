@@ -18,6 +18,7 @@ type ClubMember struct {
 	LastPlayed     string
 	EarliestPlayed string
 	Role           string
+	Tag            string
 }
 
 type ClubMemberTime struct {
@@ -79,6 +80,7 @@ func (cs *ClubService) CalculateClubMemberStats(apiResponse models.ClubMembersRe
 				Role:           item.Role,
 				LastPlayed:     latestPlayedTimestamp,
 				EarliestPlayed: utils.CalculateDuration(earliestPlayedTimestamp),
+				Tag:            item.Tag,
 			}
 
 			clubMembers = append(clubMembers, clubMember)

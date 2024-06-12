@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -93,96 +94,22 @@ var (
 	}
 )
 
-// Mock configuration
 func setupMockConfig() {}
 
-// Test for NewPlayerService function
 func TestNewPlayerService(t *testing.T) {
 	playerTag := "PLAYER123"
 	ps := NewPlayerService(playerTag)
 
-	expectedTag := "%23PLAYER123" // #PLAYER123 URL-encoded
+	expectedTag := "%23PLAYER123"
 	assert.Equal(t, expectedTag, ps.PlayerTag)
 }
 
 func TestGetData(t *testing.T) {
 	setupMockConfig()
 
-	mockResponse :=
-		`{
-				"items": [
-					{
-						"battle": {
-							"duration": 180,
-							"mode": "Gem Grab",
-							"result": "victory",
-							"starPlayer": {
-								"brawler": {
-									"id": 1,
-									"name": "Shelly",
-									"power": 9,
-									"trophies": 500
-								},
-								"name": "TestName",
-								"tag": "#PLAYER123"
-							},
-							"teams": [
-								[
-									{
-										"brawler": {
-											"id": 2,
-											"name": "Colt",
-											"power": 8,
-											"trophies": 600
-										},
-										"name": "Player1",
-										"tag": "#DEF456"
-									}
-								]
-							],
-							"type": "ranked"
-						},
-						"battleTime": "20240604T010049.000Z",
-						"event": {
-							"id": 123,
-							"map": "Hard Rock Mine",
-							"mode": "Gem Grab"
-						}
-					},
-					{
-						"battle": {
-							"duration": 210,
-							"mode": "Brawl Ball",
-							"result": "defeat",
-							"starPlayer": null,
-							"teams": [
-								[
-									{
-										"brawler": {
-											"id": 8,
-											"name": "El Primo",
-											"power": 10,
-											"trophies": 700
-										},
-										"name": "Player7",
-										"tag": "#VWX234"
-									}
-								]
-							],
-							"type": "friendly"
-						},
-						"battleTime": "20240604T005831.000Z",
-						"event": {
-							"id": 124,
-							"map": "Pinball Dreams",
-							"mode": "Brawl Ball"
-						}
-					}
-				],
-				"paging": {
-					"cursors": {}
-				}
-			}`
+	mockResponse, err := json.Marshal(sampleData)
+	assert.NoError(t, err)
+
 	// Create a mock server
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))

@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 
 	"github.com/timolung/brawl-stars-stats-service/internal/config"
@@ -105,28 +106,28 @@ func (bs *PlayerService) CalculatePlayerStats(apiResponse models.BattleLogRespon
 		starPlayerDefeatPercent = 0
 	}
 
-	victoryStarPlayerPercent := utils.RoundToNearestTwoDecimals(float64(starPlayerVictoryCount) / float64(starPlayerCount) * 100)
-	if victoryCount == 0 {
-		victoryStarPlayerPercent = 0
-	}
+	// victoryStarPlayerPercent := utils.RoundToNearestTwoDecimals(float64(starPlayerVictoryCount) / float64(starPlayerCount) * 100)
+	// if victoryCount == 0 {
+	// 	victoryStarPlayerPercent = 0
+	// }
 
-	defeatStarPlayerPercent := utils.RoundToNearestTwoDecimals(float64(starPlayerDefeatCount) / float64(starPlayerCount) * 100)
-	if defeatCount == 0 {
-		defeatStarPlayerPercent = 0
-	}
+	// defeatStarPlayerPercent := utils.RoundToNearestTwoDecimals(float64(starPlayerDefeatCount) / float64(starPlayerCount) * 100)
+	// if defeatCount == 0 {
+	// 	defeatStarPlayerPercent = 0
+	// }
 
 	stats := []Stat{
 		{Description: constant.BattleLogTotalGamesDescription, Value: totalGames},
 		{Description: constant.BattleLogLastPlayedDescription, Value: lastPlayed},
 		{Description: constant.BattleLogTotalTimeDescription, Value: earliestPlayed},
-		{Description: constant.BattleLogStarPlayerDescription, Value: starPlayerPercent},
+		{Description: constant.BattleLogStarPlayerDescription, Value: fmt.Sprintf("%.2f%%", starPlayerPercent)},
 		{Description: constant.BattleLogTotalVictoriesDescription, Value: victoryCount},
 		{Description: constant.BattleLogTotalDefeatsDescription, Value: defeatCount},
 		{Description: constant.BattleLogTotalTiesDescription, Value: tiedCount},
-		{Description: constant.BattleLogStarPlayerVictoryDescription, Value: starPlayerVictoryPercent},
-		{Description: constant.BattleLogStarPlayerDefeatDescription, Value: starPlayerDefeatPercent},
-		{Description: constant.BattleLogVictoryStarPlayerDescription, Value: victoryStarPlayerPercent},
-		{Description: constant.BattleLogDefeatStarPlayerDescription, Value: defeatStarPlayerPercent},
+		{Description: constant.BattleLogStarPlayerVictoryDescription, Value: fmt.Sprintf("%.2f%%", starPlayerVictoryPercent)},
+		{Description: constant.BattleLogStarPlayerDefeatDescription, Value: fmt.Sprintf("%.2f%%", starPlayerDefeatPercent)},
+		// {Description: constant.BattleLogVictoryStarPlayerDescription, Value: victoryStarPlayerPercent},
+		// {Description: constant.BattleLogDefeatStarPlayerDescription, Value: defeatStarPlayerPercent},
 	}
 
 	return stats, nil
