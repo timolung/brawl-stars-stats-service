@@ -2,13 +2,22 @@ package services
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 	"net/url"
 
 	"github.com/timolung/brawl-stars-stats-service/internal/config"
 	"github.com/timolung/brawl-stars-stats-service/internal/constant"
 	"github.com/timolung/brawl-stars-stats-service/internal/models"
 	"github.com/timolung/brawl-stars-stats-service/internal/utils"
+)
+
+var (
+	ShowDownBounds = map[string][]int{
+		"soloShowdown": {constant.SoloShowDownVictoryLowerBound, constant.SoloShowDownDefeatUpperBound},
+		"duoShowdown":  {constant.DuoShowdownVictoryLowerBound, constant.DuoShowdownDefeatUpperBound},
+	}
 )
 
 type Stat struct {
@@ -61,37 +70,54 @@ func (bs *PlayerService) CalculatePlayerStats(apiResponse models.BattleLogRespon
 	victoryCount := 0
 	defeatCount := 0
 	tiedCount := 0
+	noStarPlayer := 0
 
 	// Iterate over the items
 	for _, item := range apiResponse.Items {
 		battle := item.Battle
 
-		// Check if the player was the star player
+		// Check for games that don't have a star player
+		if battle.StarPlayer == nil {
+			fmt.Println(battle.StarPlayer)
+			fmt.Println("No star player")
+			noStarPlayer++
+		}
 
+		result := battle.Result
+		var err error
+		if len(result) == 0 {
+			result, err = calculateRank(battle.Rank, battle.Mode)
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			result = battle.Result
+		}
 		// Check if the player's team won or lost the battle
-		if battle.Result == "victory" {
+		if result == "victory" {
 			if battle.StarPlayer != nil && battle.StarPlayer.Tag == bs.PlayerTagUnencoded {
 				starPlayerCount++
 				starPlayerVictoryCount++
 			}
 			victoryCount++
-		} else if battle.Result == "defeat" {
+		} else if result == "defeat" {
 			if battle.StarPlayer != nil && battle.StarPlayer.Tag == bs.PlayerTagUnencoded {
 				starPlayerCount++
 				starPlayerDefeatCount++
 			}
 			defeatCount++
-		} else {
+		} else if result == "draw" {
 			tiedCount++
 		}
 	}
 
 	// Calculate percentages
 	totalGames := len(apiResponse.Items)
+	totalGamesWithAStarPlayer := totalGames - noStarPlayer
 	lastPlayed := utils.CalculateDuration(apiResponse.Items[0].BattleTime)
 	earliestPlayed := utils.CalculateDuration(apiResponse.Items[totalGames-1].BattleTime)
 
-	starPlayerPercent := utils.RoundToNearestTwoDecimals(float64(starPlayerCount) / float64(totalGames) * 100)
+	starPlayerPercent := utils.RoundToNearestTwoDecimals(float64(starPlayerCount) / float64(totalGamesWithAStarPlayer) * 100)
 	if totalGames == 0 {
 		starPlayerPercent = 0
 	}
@@ -118,6 +144,7 @@ func (bs *PlayerService) CalculatePlayerStats(apiResponse models.BattleLogRespon
 
 	stats := []Stat{
 		{Description: constant.BattleLogTotalGamesDescription, Value: totalGames},
+		{Description: constant.BattleLogTotalStarPlayerGames, Value: totalGamesWithAStarPlayer},
 		{Description: constant.BattleLogLastPlayedDescription, Value: lastPlayed},
 		{Description: constant.BattleLogTotalTimeDescription, Value: earliestPlayed},
 		{Description: constant.BattleLogStarPlayerDescription, Value: fmt.Sprintf("%.2f%%", starPlayerPercent)},
@@ -131,4 +158,15 @@ func (bs *PlayerService) CalculatePlayerStats(apiResponse models.BattleLogRespon
 	}
 
 	return stats, nil
+}
+
+func calculateRank(rank int, mode string) (string, error) {
+	if rank <= ShowDownBounds[mode][0] {
+		return "victory", nil
+	} else if rank >= ShowDownBounds[mode][1] {
+		return "defeat", nil
+	} else if rank > ShowDownBounds[mode][0] && rank < ShowDownBounds[mode][1] {
+		return "draw", nil
+	}
+	return "", errors.New("game mode does not have a rank")
 }

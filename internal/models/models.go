@@ -18,6 +18,7 @@ type Team []Player
 type Battle struct {
 	Duration   int     `json:"duration"`
 	Mode       string  `json:"mode"`
+	Rank       int     `json:"rank"`
 	Result     string  `json:"result"`
 	StarPlayer *Player `json:"starPlayer"`
 	Teams      []Team  `json:"teams"`
